@@ -1,0 +1,35 @@
+/*
+Author: Gokturk Enez
+Mail: hi@gokturkenez.com.tr
+Description: PayU Turkey Token v2 Services - Create Token with Ref No
+*/
+
+var EndPointUrl = 'https://secure.payu.com.tr/order/token/v2/merchantToken/';
+SecretKey = 'SECRET_KEY';
+refNo = 57399918;
+
+var TimeStamp = Math.floor(Date.now() / 1000);
+
+var array =  {
+    'merchant': 'OPU_TEST',
+    'refNo': refNo,
+    'timestamp': TimeStamp,
+};
+
+hashstring = '';
+for (var k in array) {
+    hashstring += array[k];
+}
+
+var hash = require('crypto')
+    , data = hashstring
+    , secretkey = SecretKey;
+
+signature = hash.createHmac('sha256', secretkey).update(data).digest('hex');
+array['signature'] = signature;
+var request = require("request");
+request.post(EndPointUrl, {form:array}, function(error, response, body) {
+    console.log(error);
+    console.log(body);
+
+});
